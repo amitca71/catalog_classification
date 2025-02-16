@@ -1,48 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Matching Results</title>
-    <style>
-        .container { display: flex; }
-        .left, .right { width: 50%; padding: 20px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
 </head>
 <body>
-    <div class="container">
-        <div class="left">
-            <h2>Architect Descriptions</h2>
-            <select id="descSelect" style="width: 100%">
-                {% for desc in descriptions %}
-                <option value="{{ loop.index0 }}">{{ desc }}</option>
+    <h1>Architect-Catalog Matcher</h1>
+    <div style="display: flex;">
+        <div style="width: 50%;">
+            <h2>Architect Records</h2>
+            <select id="architectDropdown">
+                {% for description in descriptions %}
+                    <option value="{{ loop.index0 }}">{{ description }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="right">
-            <h2>Top Matches</h2>
-            <div id="results"></div>
+        <div style="width: 50%;">
+            <h2>Top 5 Matches</h2>
+            <ul id="matchesList"></ul>
         </div>
     </div>
 
     <script>
-        document.getElementById('descSelect').addEventListener('change', function() {
+        document.getElementById('architectDropdown').addEventListener('change', function() {
             const index = this.value;
             fetch('/get_matches', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ index: parseInt(index), n: 5 })
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ index: parseInt(index), n: 5 }),
             })
             .then(response => response.json())
             .then(data => {
-                const resultsDiv = document.getElementById('results');
-                resultsDiv.innerHTML = data.matches
-                    .map(match => ⁠ <p>${match}</p> ⁠)
-                    .join('');
+                const matchesList = document.getElementById('matchesList');
+                matchesList.innerHTML = '';
+                data.matches.forEach(match => {
+                    const li = document.createElement('li');
+                    li.textContent = match;
+                    matchesList.appendChild(li);
+                });
             });
         });
 
-        // Trigger initial load
-        document.getElementById('descSelect').dispatchEvent(new Event('change'));
+        // Trigger the change event on page load to show initial matches
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('architectDropdown').dispatchEvent(new Event('change'));
+        });
     </script>
 </body>
 </html>
