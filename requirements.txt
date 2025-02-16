@@ -1,0 +1,4 @@
+flask
+pandas
+stanza
+scikit-learn

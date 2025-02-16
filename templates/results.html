@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Matching Results</title>
+    <style>
+        .container { display: flex; }
+        .left, .right { width: 50%; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <h2>Architect Descriptions</h2>
+            <select id="descSelect" style="width: 100%">
+                {% for desc in descriptions %}
+                <option value="{{ loop.index0 }}">{{ desc }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="right">
+            <h2>Top Matches</h2>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('descSelect').addEventListener('change', function() {
+            const index = this.value;
+            fetch('/get_matches', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ index: parseInt(index), n: 5 })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = data.matches
+                    .map(match => ⁠ <p>${match}</p> ⁠)
+                    .join('');
+            });
+        });
+
+        // Trigger initial load
+        document.getElementById('descSelect').dispatchEvent(new Event('change'));
+    </script>
+</body>
+</html>
