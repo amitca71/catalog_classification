@@ -9,7 +9,7 @@ Installation:
 6) activate venv: source ./venv/bin/activate 
 7) pip install -r requirements.txt
 8) python app.py
-9) on browser http://localhost:5000
+9) on browser http://localhost:5000  
 https://youtu.be/8dsGPEQCiu8?si=vn6vYtCe-hKBiw6o
 
 
